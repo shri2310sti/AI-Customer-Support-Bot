@@ -2,12 +2,12 @@ let sessionId = null;
 let isEscalated = false;
 
 // Initialize the chat
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     createNewSession();
     loadFAQs();
-    
+
     // Add enter key support
-    document.getElementById('user-input').addEventListener('keypress', function(e) {
+    document.getElementById('user-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
@@ -23,7 +23,7 @@ async function createNewSession() {
                 'Content-Type': 'application/json',
             }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             sessionId = data.session_id;
@@ -39,21 +39,21 @@ async function createNewSession() {
 async function sendMessage() {
     const input = document.getElementById('user-input');
     const message = input.value.trim();
-    
+
     if (!message || isEscalated) return;
-    
+
     // Add user message to chat
     addMessageToChat('user', message);
     input.value = '';
-    
+
     // Disable input while processing
     const sendButton = document.getElementById('send-button');
     sendButton.disabled = true;
     input.disabled = true;
-    
+
     // Show typing indicator
     showTypingIndicator();
-    
+
     try {
         const response = await fetch('/ask', {
             method: 'POST',
@@ -65,16 +65,16 @@ async function sendMessage() {
                 query: message
             })
         });
-        
+
         if (response.ok) {
             const data = await response.json();
-            
+
             // Remove typing indicator
             hideTypingIndicator();
-            
+
             // Add bot response to chat
             addMessageToChat('bot', data.response);
-            
+
             // Check if escalated
             if (data.escalated) {
                 isEscalated = true;
@@ -100,19 +100,19 @@ function addMessageToChat(role, content) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}-message`;
-    
+
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    
+
     if (role === 'user') {
         contentDiv.textContent = content;
     } else {
         contentDiv.innerHTML = `<strong>AI Assistant:</strong> ${content}`;
     }
-    
+
     messageDiv.appendChild(contentDiv);
     chatMessages.appendChild(messageDiv);
-    
+
     // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -122,7 +122,7 @@ function showTypingIndicator() {
     const typingDiv = document.createElement('div');
     typingDiv.className = 'message bot-message';
     typingDiv.id = 'typing-indicator';
-    
+
     typingDiv.innerHTML = `
         <div class="message-content">
             <div class="typing-indicator">
@@ -135,7 +135,7 @@ function showTypingIndicator() {
             </div>
         </div>
     `;
-    
+
     chatMessages.appendChild(typingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -167,25 +167,25 @@ async function loadFAQs() {
 function displayFAQs(faqs) {
     const faqList = document.getElementById('faq-list');
     faqList.innerHTML = '';
-    
+
     faqs.forEach(faq => {
         const faqItem = document.createElement('div');
         faqItem.className = 'faq-item';
         faqItem.onclick = () => askFAQ(faq.question);
-        
+
         faqItem.innerHTML = `
             <div class="faq-question">${faq.question}</div>
             <div class="faq-answer">${faq.answer}</div>
             <span class="faq-category">${faq.category}</span>
         `;
-        
+
         faqList.appendChild(faqItem);
     });
 }
 
 function askFAQ(question) {
     if (isEscalated) return;
-    
+
     const input = document.getElementById('user-input');
     input.value = question;
     sendMessage();
