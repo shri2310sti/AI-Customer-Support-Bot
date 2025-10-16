@@ -2,7 +2,7 @@
 
 Hi! This is my AI Customer Support Bot project. The goal of this project is to simulate a real customer support assistant using AI. It can answer FAQs, keep track of conversations, and escalate issues to a human agent if the question is too complicated.
 
-Video Link :- https://youtu.be/W7kQETH-BTg
+Demo Video Link :- [https://youtu.be/W7kQETH-BTg](https://youtube.com/watch?v=UxM8iRuxNTE)
 
 ---
 
@@ -208,6 +208,7 @@ uvicorn main:app --reload
 
 * Chat UI: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 * API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
 
 
 
